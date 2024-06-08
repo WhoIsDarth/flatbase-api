@@ -1,3 +1,4 @@
+import logging
 from typing import Literal
 
 from dotenv import load_dotenv
@@ -5,6 +6,14 @@ from pydantic_settings import BaseSettings
 
 # Load environment variables from .env file
 load_dotenv()
+
+logging.basicConfig(
+    level="INFO",
+    format="%(asctime)s [%(filename)s] %(levelname)s %(message)s",
+    handlers=[
+        logging.StreamHandler(),
+    ],
+)
 
 
 class Settings(BaseSettings):
@@ -24,6 +33,10 @@ class Settings(BaseSettings):
     CORS_ALLOW_HEADERS: list[str]
 
     LOGGING_LEVEL: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
+
+    XRP_WALLET_PUBLIC_KEY: str
+    XRP_WALLET_PRIVATE_KEY: str
+    XRP_NETWORK: str
 
 
 settings = Settings()
