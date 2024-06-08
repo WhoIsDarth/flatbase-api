@@ -5,7 +5,7 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 from app.config import DB_CONNECTION_STRING
 from app.core.db import BaseModel
-from app.models.demo_model import DemoModel
+from app.models.flat_coin_model import FlatCoinModel
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
