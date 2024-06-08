@@ -18,27 +18,26 @@ class XrplClientWrapper:
         main_wallet_public_key: Optional[str] = settings.XRP_WALLET_PUBLIC_KEY,
         main_wallet_private_key: Optional[str] = settings.XRP_WALLET_PRIVATE_KEY,
     ):
-        self.network = network
-        self.client = AsyncJsonRpcClient(self.network)
-        self.main_wallet = Wallet(
+        self.__client = AsyncJsonRpcClient(network)
+        self.__main_wallet = Wallet(
             public_key=main_wallet_public_key, private_key=main_wallet_private_key
         )
 
     async def create_wallet(self) -> Wallet:
         # Create and fund a new wallet using the XRPL Testnet Faucet
-        wallet = await generate_faucet_wallet(self.client)
+        wallet = await generate_faucet_wallet(self.__client)
         return wallet
 
     async def fund_wallet(self, destination_wallet: Wallet, amount: str) -> None:
-        if not self.main_wallet:
+        if not self.__main_wallet:
             raise ValueError("Main wallet is not set.")
 
         payment_tx = Payment(
-            account=self.main_wallet.classic_address,
+            account=self.__main_wallet.classic_address,
             destination=destination_wallet.classic_address,
             amount=amount,  # Amount in drops (1 XRP = 1,000,000 drops)
         )
-        response = await submit_and_wait(payment_tx, self.client, self.main_wallet)
+        response = await submit_and_wait(payment_tx, self.__client, self.__main_wallet)
         logging.info(
             f"Funding response for {destination_wallet.classic_address}: {response}"
         )
@@ -58,21 +57,21 @@ class XrplClientWrapper:
 
         # Set default Ripple flag to allow token issuing
         account_set_tx = self.__set_ripple(issuer_wallet)
-        response = await submit_and_wait(account_set_tx, self.client, issuer_wallet)
+        response = await submit_and_wait(account_set_tx, self.__client, issuer_wallet)
         logging.info(f"AccountSet response: {response}")
 
         # Create a trust line from the holder to the issuer for the stablecoin
         trust_set_tx = self.__create_trustline(
             holder_wallet, issuer_wallet, stable_coin_name, amount_of_tokens
         )
-        response = await submit_and_wait(trust_set_tx, self.client, holder_wallet)
+        response = await submit_and_wait(trust_set_tx, self.__client, holder_wallet)
         logging.info(f"TrustSet response: {response}")
 
         # Issue some amount of the stable coin from the issuer to the holder
         payment_tx = self.__issue_stable_coin(
             issuer_wallet, holder_wallet, stable_coin_name, amount_to_issue
         )
-        response = await submit_and_wait(payment_tx, self.client, issuer_wallet)
+        response = await submit_and_wait(payment_tx, self.__client, issuer_wallet)
         logging.info(f"Payment response: {response}")
 
         # Validate the account info
@@ -125,5 +124,5 @@ class XrplClientWrapper:
         account_info = AccountInfo(
             account=wallet.classic_address, ledger_index="validated"
         )
-        response = await self.client.request(account_info)
+        response = await self.__client.request(account_info)
         logging.info(f"Validation response: {response}")
