@@ -75,6 +75,7 @@ class XrplClientWrapper:
         logging.info(f"Payment response: {response}")
 
         # Validate the account info
+        # TODO: Check that coin really exists
         await self.__validate(holder_wallet)
 
         # Return the stablecoin address
