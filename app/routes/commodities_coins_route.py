@@ -9,10 +9,10 @@ from app.services.commodity_coin_service import (
     build_commodity_coin_service,
 )
 
-router = APIRouter(path="")
+router = APIRouter()
 
 
-@router.get("")
+@router.get("/coins/commodity")
 async def get_commodity_coins(
     name: Annotated[str, Query()],
     commodity_coin_service: Annotated[
@@ -22,7 +22,7 @@ async def get_commodity_coins(
     return await commodity_coin_service.get_commodity_coins(name=name)
 
 
-@router.post("")
+@router.post("/coins/commodity")
 async def create_commodity_coin(
     create_flat_coin_schema: Annotated[CreateFlatCoinSchema, Body()],
     commodity_coin_service: Annotated[
