@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: exchange_data_collector
+    ports:
+      - 5432:5432
