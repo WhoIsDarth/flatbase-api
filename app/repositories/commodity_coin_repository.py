@@ -47,3 +47,8 @@ class CommodityCoinRepository:
         await self.__session.refresh(new_commodity_coin)
 
         return new_commodity_coin
+
+    async def find_by_ids(self, ids: list[int]) -> list[CommodityCoinModel]:
+        query = select(CommodityCoinModel).where(CommodityCoinModel.id.in_(ids))
+        result = await self.__session.execute(query)
+        return result.scalars().all()

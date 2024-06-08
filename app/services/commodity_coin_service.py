@@ -53,6 +53,7 @@ class CommodityCoinService:
             amount_of_tokens,
             amount_to_issue,
         )
+        # TODO: Encrypt Private Keys
         commodity_coin_model = await self.__commodity_coin_repository.create(
             name=name,
             # TODO: Replace with real coin address
@@ -63,7 +64,8 @@ class CommodityCoinService:
             holder_wallet_public_key=holder_wallet.public_key,
             holder_wallet_private_key=holder_wallet.private_key,
         )
-        print("commodity_coin_model.id", commodity_coin_model.id)
+        logging.info(f"Created commodity_coin_model with id:{commodity_coin_model.id}")
+
         return ObjectCreatedSchema(id=str(commodity_coin_model.id))
 
 
