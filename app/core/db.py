@@ -1,12 +1,12 @@
 import logging
 from collections.abc import AsyncIterator, Iterator
-from contextlib import asynccontextmanager, contextmanager
+from contextlib import contextmanager
 from datetime import datetime
 from uuid import UUID, uuid4
 
 from sqlalchemy import DateTime, create_engine, text
 from sqlalchemy.dialects.postgresql import UUID as pg_UUID
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 
 from app.config import DB_CONNECTION_STRING, DB_CONNECTION_STRING_ASYNC, settings
@@ -23,23 +23,12 @@ async_engine = create_async_engine(
     pool_recycle=settings.POSTGRES_POOL_RECYCLE,
 )
 engine = create_engine(DB_CONNECTION_STRING)
+async_session = sessionmaker(async_engine, class_=AsyncSession, expire_on_commit=False)
 
 
-@asynccontextmanager
 async def get_async_db() -> AsyncIterator[AsyncSession]:
-    session_class = async_sessionmaker(
-        async_engine,
-        expire_on_commit=False,
-    )
-    session = session_class()
-    try:
+    async with async_session() as session:
         yield session
-        await session.commit()
-    except Exception:
-        await session.rollback()
-        raise
-    finally:
-        await session.close()
 
 
 @contextmanager

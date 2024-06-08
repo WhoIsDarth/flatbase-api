@@ -1,10 +1,12 @@
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 
 from app.config import settings
 from app.core.errors import ServiceError, service_api_exception_handler
-from app.routes import demo_route
+from app.routes.commodities_coins_route import router as commodities_coins_route
+from app.routes.flat_coins_route import router as flat_coins_route
 
 BASE_PATH = "/api/v1"
 
@@ -29,7 +31,15 @@ app.add_middleware(
 
 # Routers
 app.include_router(
-    demo_route.router,
+    commodities_coins_route,
     prefix=BASE_PATH,
     tags=["demo"],
 )
+app.include_router(
+    flat_coins_route,
+    prefix=BASE_PATH,
+    tags=["demo"],
+)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
