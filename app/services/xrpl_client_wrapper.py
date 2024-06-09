@@ -33,6 +33,7 @@ class XrplClientWrapper:
 
     async def create_wallet(self) -> Wallet:
         # Create and fund a new wallet using the XRPL Testnet Faucet
+        # TODO: When we move from development remove faucet_wallet generation
         wallet = await generate_faucet_wallet(self.__client)
         return wallet
 

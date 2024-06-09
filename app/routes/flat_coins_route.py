@@ -41,7 +41,7 @@ async def create_flat_coin(
     )
 
 
-@router.post("/coins/flat/{id}/faucet", response_model=ObjectCreatedSchema)
+@router.post("/coins/flat/{id}/faucet", response_model=None)
 async def send_flat_coin(
     send_stable_coin_schema: Annotated[SendStableCoinSchema, Body()],
     id: Annotated[UUID, Path()],

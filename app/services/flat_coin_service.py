@@ -111,7 +111,7 @@ class FlatCoinService:
 
         if flat_coin_model is None:
             raise Exception("Flat coin not found")
-        
+
         logging.info("Found flat_coin_model, sending...")
 
         await self.__xrpl_client_wrapper.send_stable_coin(
