@@ -61,8 +61,8 @@ class XrplClientWrapper:
     ) -> str:
         # Fund issuer and holder wallets
         # TODO: Calculate funding amount later
-        await self.fund_wallet(issuer_wallet, "1000000")  # Fund with 10 XRP
-        await self.fund_wallet(holder_wallet, "1000000")  # Fund with 10 XRP
+        # await self.fund_wallet(issuer_wallet, "1000000")  # Fund with 10 XRP
+        # await self.fund_wallet(holder_wallet, "1000000")  # Fund with 10 XRP
 
         # Set default Ripple flag to allow token issuing
         account_set_tx = self.__set_ripple(issuer_wallet)
